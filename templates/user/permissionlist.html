@@ -1,0 +1,110 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>权限name</th>
+            <th>权限codename</th>
+            <th>操作</th>
+
+        </tr>
+        {% for permission in object_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ permission.name }}</td>
+            <td>{{ permission.codename }}</td>
+            <td>
+
+                <button class="btn btn-primary btn-sm permissionmodify_name" code_name='{{ permission.codename }}'data='{{ permission.id }}' >修改name</button>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="panel-default">
+        <center>
+		<ul class="pagination">
+			    <li><a href="/permission/list/?page=1">首页</a></li>
+                {% if page_obj.has_previous == True %}
+                    <li><a href="/permission/list/?page={{ page_obj.previous_page_number }}">上一页</a></li>
+                {%  else %}
+
+                    <li class="previous disabled"><a>上一页</a></li>
+                {% endif %}
+
+
+                {% for p in page_range %}
+                {#% for p in page_obj.paginator.page_range %#}
+                    {%  if p == page_obj.number %}
+				        <li class="active"><a href="/permission/list/?page={{ p }}">{{ p }}</a></li>
+                    {% else %}
+                        <li><a href="/permission/list/?page={{ p }}">{{ p }}</a></li>
+                    {% endif %}
+
+                {% endfor %}
+                {% if page_obj.has_next == True %}
+                    <li><a href="/permission/list/?page={{ page_obj.next_page_number }}">下一页</a></li>
+                {% else %}
+				    <li class="previous disabled"><a>下一页</a></li>
+                {% endif %}
+
+			    <li><a href="/permission/list/?page={{ page_obj.paginator.num_pages }}">末页</a></li>
+		</ul>
+	    </center>
+    </div>
+    <div class="modal fade" id="permissionmodify_modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 id="permissionmodify_title"></h4>
+                </div>
+                <div class="modal-body form-inline col-xs-6">
+
+                    name:<input class="form-control" id="permissionmodify_val">
+                    <button class="btn btn-primary" id="permissionmodify_btn">提交</button>
+
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{%  block js %}
+  <script>
+     $('.permissionmodify_name').click(function () {
+         var permissionmodify_modal = $('#permissionmodify_modal');
+         var permissionmodify_name = $(this);
+         var code_name = $(this).attr('code_name');
+         $('#permissionmodify_title').text('权限:'+code_name);
+         permissionmodify_modal.modal('show');
+         $('#permissionmodify_btn').click(function () {
+             var pid = permissionmodify_name.attr('data');
+             var permission_val = $('#permissionmodify_val').val();
+             var ret ={'pid':pid,'permission_name':permission_val};
+             $.post('/permission/modifycodename/',ret,function (res) {
+                 permissionmodify_modal.modal('hide');
+                        if (res.status == 0){
+
+                            swal("操作成功", "", "success");
+                            setTimeout(function () {
+                             window.location.reload()
+                              },200);
+                                }
+
+                        else{
+                            swal("操作失败", res.message, "error")
+                        }
+
+            })
+
+         });
+     })
+  </script>
+{% endblock %}

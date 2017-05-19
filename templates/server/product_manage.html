@@ -1,0 +1,365 @@
+{% extends "public/layout.html" %}
+
+{% block css %}
+    <link href="/static/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
+    <style>
+        .ztree * {
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #productinfo {
+            padding-bottom: 25px;
+        }
+
+        #modify {
+            width: 100%;
+            height: 100%;
+            display: none
+        }
+
+        #infomatioin {
+            width: 100%;
+            height: 100%;
+            display: none
+        }
+
+        #infomatioin ul li {
+            line-height: 45px;
+            font-size: 16px;
+        }
+
+        #infomatioin ul li label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            font-weight: bold;
+            margin-right: 25px;
+        }
+
+        #infomatioin ul li button {
+            margin-left: 125px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="col-xs-3">
+        <a type="button" class="btn btn-primary" href="{% url 'product_add' %}">添加业务线</a>
+        <div id="ztree" class="ztree"></div>
+    </div>
+    <div class="col-xs-9">
+        <div id="productinfo">
+            <div id="infomatioin">
+                <ul class="list-unstyled">
+                    <li><label>分类名: </label><span id="info_service_name"></span></li>
+                    <li><label>上级分类: </label><span id="info_pid"></span></li>
+                    <li><label>字母简称: </label><span id="info_module_letter"></span></li>
+                    <li><label>业务负责人: </label><span id="info_dev_interface"></span></li>
+                    <li><label>运维负责人: </label><span id="info_op_interface"></span></li>
+                    <li>
+                        <button type="button" class="btn btn-primary" id="info_modify_btn">修改</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="modify">
+                <form class="form-horizontal" role="form" parsley-validate="" id="basicvalidations" method="post">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">分类名 *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control parsley-validated" name="service_name"
+                                   autocomplete="off"
+                                   id="input_service_name" parsley-trigger="change" parsley-required="true"
+                                   parsley-minlength="2" parsley-validation-minlength="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">上级分类 *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control parsley-validated" readonly="" autocomplete="off"
+                                   id="input_pid" parsley-trigger="change" parsley-required="true" parsley-minlength="2"
+                                   parsley-validation-minlength="1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">字母简称 *</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control parsley-validated" name="module_letter"
+                                   autocomplete="off" id="input_module_letter" parsley-trigger="change"
+                                   parsley-required="true" parsley-minlength="2" parsley-validation-minlength="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">业务负责人 *</label>
+                        <div class="col-sm-8">
+                            <select data-placeholder="" multiple="选择联系人" tabindex="-1" name="dev_interface"
+                                    id="input_dev_interface" class="chosen-select form-control chosen-transparent">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_op_interface" class="col-sm-2 control-label">运维负责人 *</label>
+                        <div class="col-sm-8">
+                            <select data-placeholder="" multiple="选择联系人" tabindex="-1" name="op_interface"
+                                    id="input_op_interface" class="chosen-select form-control chosen-transparent">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group form-footer">
+                        <div class="col-sm-offset-4 col-sm-8">
+                            <button type="submit" id="submit_modify" class="btn btn-primary">提交</button>
+                            <button id="return_info" class="btn btn-default">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <ul class="list-inline" id="hostlist" style="display: block;">
+
+        </ul>
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript" src="/static/zTree_v3-master/js/jquery.ztree.core.js"></script>
+
+
+    <script>
+        var data;
+        var infomatioin_obj = $("#infomatioin");
+        var info_service_name_obj = $("#info_service_name");
+        var info_pid_obj = $("#info_pid");
+        var info_module_letter_obj = $("#info_module_letter");
+        var info_dev_interface_obj = $("#info_dev_interface");
+        var info_op_interface_obj = $("#info_op_interface");
+        var info_modify_btn_obj = $("#info_modify_btn");
+        var modify_obj = $("#modify");
+        var chosen_select_obj = $(".chosen-select");
+        var hostlist = $("#hostlist");
+        function get_node_info(product_id) {
+            modify_obj.fadeOut(false);
+            $.get('/server/product/list_node_info', {"id": product_id}, function (res) {
+                if (res.status != 0) {
+                    swal("获取信息错误", res.errmsg, "error")
+                } else {
+                    data = res.data;
+                    info_service_name_obj.html(res.data.name);
+                    info_pid_obj.html(res.data.p_product_id);
+                    info_module_letter_obj.html(res.data.module_letter);
+                    info_dev_interface_obj.html(res.data.dev_interface);
+                    info_op_interface_obj.html(res.data.op_interface);
+                    infomatioin_obj.fadeIn("fast")
+
+
+                }
+            })
+        }
+        function get_hostlist_info(product_id) {
+            $.get('/server/product/hostlist',{"id": product_id},function (res) {
+                if (res.status==0){
+                    var hosts = $.parseJSON(res.data);
+                    console.log(hosts);
+                    var html = '';
+                    $.each(hosts,function (ke,va) {
+                        html += '<li>'+va.name+'  ('+va.ip+')</li>'
+                    });
+                    console.log(html);
+                    hostlist.append(html)
+                }
+                else {
+                   swal('错误', res.message, "error");
+                }
+            });
+            hostlist.fadeIn("fast")
+        }
+
+        function zTreeOnClick(event, treeId, treeNode) {
+            //console.log(treeNode.tId + ", " + treeNode.name);
+            var product_id = treeNode.id;
+            get_node_info(product_id);
+            hostlist.hide().empty();
+            if (treeNode.pid != 0) {
+                get_hostlist_info(product_id);
+            }
+        }
+
+        var zTreeObj;
+        // zTree 鐨勫弬鏁伴厤缃紝娣卞叆浣跨敤璇峰弬鑰� API 鏂囨。锛坰etting 閰嶇疆璇﹁В锛�
+        var setting = {
+            callback: {
+                onClick: zTreeOnClick
+            },
+            view: {
+                fontCss: {fontSize: "16px"}
+            }
+        };
+        // zTree 鐨勬暟鎹睘鎬э紝娣卞叆浣跨敤璇峰弬鑰� API 鏂囨。锛坺TreeNode 鑺傜偣鏁版嵁璇﹁В锛�
+
+        //var zNodes = [{"children": [{"pid": 1, "name": "web", "id": 2},
+        //  {"pid": 1, "name": "wap", "id": 3},
+        //{"pid": 1, "name": "app", "id": 4},
+        //{"pid": 1, "name": "api", "id": 5}], "pid": 0, "name": "\u623f\u4ea7", "id": 1},
+        //{"children": [{"pid": 6, "name": "web", "id": 7},
+        //  {"pid": 6, "name": "wap", "id": 8},
+        //  {"pid": 6, "name": "app", "id": 9},
+        // {"pid": 6, "name": "api", "id": 10}], "pid": 0, "name": "\u62db\u8058", "id": 6},
+        //{"children": [{"pid": 11, "name": "web", "id": 12},
+        //   {"pid": 11, "name": "wap", "id": 13},
+        //  {"pid": 11, "name": "app", "id": 14},
+        // {"pid": 11, "name": "api", "id": 15}], "pid": 0, "name": "\u4e8c\u624b", "id": 11},
+        //{"children": [{"pid": 16, "name": "web", "id": 17},
+        //   {"pid": 16, "name": "wap", "id": 18},
+        //  {"pid": 16, "name": "app", "id": 19}], "pid": 0, "name": "\u670d\u52a1", "id": 16},
+        //{"children": [{"pid": 20, "name": "app", "id": 21}], "pid": 0, "name": "\u652f\u4ed8", "id": 20},
+        //{"children": [], "pid": 0, "name": "111", "id": 22}];
+
+        var zNodes = {{ znodes |safe}}
+
+
+                function clone_options(interface_obj) {
+                    var interface_options_obj = interface_obj.find("option");
+                    return interface_options_obj.clone()
+
+                };
+        function clear_options_select(input_dev_interface_obj, input_op_interface_obj) {
+
+            var dev_options_obj = input_dev_interface_obj.find("option");
+            var op_options_obj = input_op_interface_obj.find("option");
+            dev_options_obj.removeAttr('selected');
+            op_options_obj.removeAttr('selected');
+
+
+        }
+
+        function option_selected(ret, interface_obj) {
+            $.each(ret, function (ke, va) {
+
+                var option_select_obj = interface_obj.find("option[value=" + va + "]");
+
+                option_select_obj.attr("selected", "selected");
+                console.log('aaaa')
+
+            });
+        }
+
+        $(function () {
+
+            zTreeObj = $.fn.zTree.init($("#ztree"), setting, zNodes);
+            var input_dev_interface_obj = $("#input_dev_interface");
+            var input_op_interface_obj = $("#input_op_interface");
+            var input_modify_btn_obj = $("#input_modify_btn");
+
+            var input_service_name_obj = $("#input_service_name");
+            var input_pid_obj = $("#input_pid");
+            var input_module_letter_obj = $("#input_module_letter");
+            var return_info_obj = $("#return_info");
+            var submit_modify_obj = $("#submit_modify");
+
+            var dusers = false;
+            $.get("/user/profilelist", function (res) {
+                dusers = $.parseJSON(res);
+                console.log(dusers)
+            });
+
+
+            info_modify_btn_obj.click(function () {
+                infomatioin_obj.hide();
+                modify_obj.fadeIn("fast");
+                var dev_interface = info_dev_interface_obj.html().split(',');
+                var op_interface = info_op_interface_obj.html().split(',');
+                input_dev_interface_obj.empty();
+                input_op_interface_obj.empty();
+
+                input_service_name_obj.val(info_service_name_obj.html());
+                input_pid_obj.val(info_pid_obj.html());
+                input_module_letter_obj.val(info_module_letter_obj.html());
+
+                $.each(dusers, function (ke, va) {
+                    var dev_interface_html = '';
+                    var op_interface_html = '';
+                    if ($.inArray(va.name, dev_interface) >= 0) {
+                        console.log(va.name);
+                        dev_interface_html += '<option selected value="' + va.name + '">' + va.email + '|' + va.name + '</option>'
+                    }
+                    else {
+                        dev_interface_html += '<option value="' + va.name + '">' + va.email + '|' + va.name + '</option>'
+                    }
+                    input_dev_interface_obj.append(dev_interface_html);
+
+                    if ($.inArray(va.name, op_interface) >= 0) {
+                        op_interface_html += '<option selected value="' + va.name + '">' + va.email + '|' + va.name + '</option>'
+                    }
+                    else {
+                        op_interface_html += '<option value="' + va.name + '">' + va.email + '|' + va.name + '</option>'
+                    }
+                    input_op_interface_obj.append(op_interface_html)
+
+
+                });
+
+
+                input_op_interface_obj.chosen({
+                    disable_search_threshold: 10,
+                    no_results_text: "没有找到对应的记录"
+                });
+                input_dev_interface_obj.chosen({
+                    disable_search_threshold: 10,
+                    no_results_text: "没有找到对应的记录"
+                });
+
+
+            });
+
+            return_info_obj.click(function () {
+                modify_obj.hide();
+                infomatioin_obj.fadeIn("fast");
+                return false
+            });
+            submit_modify_obj.click(function () {
+                var modify_data = {
+                    "id": data.id,
+                    "service_name": input_service_name_obj.val(),
+                    "module_letter": input_module_letter_obj.val(),
+                    "dev_interface": input_dev_interface_obj.val(),
+                    "op_interface": input_op_interface_obj.val()
+                };
+                console.log(modify_data);
+                $.post("/server/product/modify/", modify_data, function (res) {
+                    if (res.status == 0) {
+
+                        swal({
+                            title: "操作成功",
+                            text: "",
+                            type: "success"
+                        }, function () {
+                            get_node_info(modify_data.id)
+                        })
+
+                    } else {
+                        swal('错误', res.message, "error");
+                    }
+
+                });
+
+
+                return false
+
+
+            })
+
+
+        })
+
+
+    </script>
+{% endblock %}

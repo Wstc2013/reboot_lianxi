@@ -1,0 +1,74 @@
+{% extends "public/layout.html" %}
+{% block body %}
+<form class="form-horizontal" method="post">
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">主机名</label>
+    <div class="col-sm-5">
+      <input type="email" class="form-control" id="inputEmail3" placeholder="hostname" value="{{ server_obj.hostname }}" disabled>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputphone" class="col-sm-2 control-label">ip</label>
+    <div class="col-sm-5">
+      <input type="text" class="form-control" id="inputphone" placeholder="ip" value="{{ server_obj.inner_ip }}"  disabled>
+    </div>
+  </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">业务线</label>
+        <div class="col-sm-5">
+            <select class="form-control" name="business_id" id="service_id">
+                <option value="0">请选择状态</option>
+                {% for product_obj in product_objs %}
+                    <option value="{{ product_obj.id }}"
+                            {% if server_obj.server_business.name == product_obj.name %}selected{% endif %}>{{ product_obj.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">产品线</label>
+        <div class="col-sm-5">
+            <select class="form-control" name="product_id" id="server_purpose">
+                <option value="0">请选择状态</option>
+
+            </select>
+        </div>
+    </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <input type="hidden" name="id" value="{{ server_obj.id }}">
+        <button type="submit" class="btn btn-primary">提交</button>
+    </div>
+  </div>
+</form>
+
+
+
+{% endblock %}
+{% block js %}
+    <script>
+        $(function () {
+            $("#service_id").change(function () {
+                var product_val = $(this).val();
+                if (product_val==0){
+                    return false
+                }
+                server_purpose = $("#server_purpose");
+                server_purpose.empty().append('<option value="">请选择</option>');
+                $.get('/server/productoptions',{product_id:product_val},function (res) {
+                        var products = $.parseJSON(res);
+                        console.log(products);
+                        $.each(products,function (ke,va) {
+                            server_purpose.append('<option value="'+ va.pk +'">'+ va.fields.name +'</option>');
+                        })
+
+
+                })
+
+            })
+
+
+        })
+     </script>
+{% endblock %}

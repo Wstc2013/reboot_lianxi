@@ -1,0 +1,26 @@
+{% extends "public/layout.html" %}
+{% block body %}
+    {% if  status == 0 %}
+        修改成功
+    {% else %}
+        修改失败:{{ message }}
+    {% endif %}
+{% endblock %}
+{% block js %}
+    <script>
+      $(function () {
+          var status = {{ status }} ;
+          var url = '{{ next_url |safe }}';
+          var time = 5000 ;
+          console.log(url);
+          if (status == 0) {
+              time = 2000
+          }
+          setTimeout(function () {
+                 window.location.href = url
+              },time)
+
+
+      })
+     </script>
+{% endblock %}

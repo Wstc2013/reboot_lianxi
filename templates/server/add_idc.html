@@ -1,0 +1,81 @@
+{% extends "public/layout.html" %}
+{% block body %}
+    {% load error_message %}
+    <div class="clearfix">
+        {% if tips %}
+            {% if status == 0 %}
+                <div class="col-sm-offset-2 col-sm-4">
+                    <div class="alert alert-success" role="alert">
+                        <i class="fa fa-check"></i>
+                        {{ tips }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-sm-offset-2 col-sm-4">
+                    <div class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        {{ tips }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <form class="form-horizontal" method="post">
+        <div class="form-group">
+
+            <label for="inputEmail3" class="col-sm-2 control-label">name</label>
+            <div class="col-sm-5">
+                <div class="form-error">
+
+                    {% error_message message.name %}
+                </div>
+                <input type="text" class="form-control" id="inputEmail3" placeholder="idc 字母简称" name="name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputphone" class="col-sm-2 control-label">idc_name</label>
+            <div class="col-sm-5">
+                <div class="form-error">
+
+                    {% error_message message.idc_name %}
+                </div>
+                <input type="text" class="form-control" id="inputphone" placeholder="idc 中文名" name="idc_name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputphone" class="col-sm-2 control-label">idc_address</label>
+            <div class="col-sm-5">
+                <div class="form-error">
+
+                    {% error_message message.idc_address %}
+                </div>
+                <input type="text" class="form-control" id="inputphone" placeholder="idc 机房的具体地址" name="idc_address">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputphone" class="col-sm-2 control-label">idc_联系人</label>
+            <div class="col-sm-5">
+                <div class="form-error">
+
+                    {% error_message message.idc_user %}
+                </div>
+                <select class="form-control" name="idc_user">
+                    {% for user_obj in  user_objs %}
+                        <option value="{{ user_obj.id }}">{{ user_obj.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block js %}
+    <script>
+        console.log('ssss')
+    </script>
+{% endblock %}

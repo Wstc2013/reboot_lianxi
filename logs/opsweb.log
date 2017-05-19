@@ -1,0 +1,27 @@
+2017-04-11 08:26:18,709 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:26:20,516 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:26:23,732 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:32:51,613 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:33:07,755 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:33:22,387 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:33:26,466 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:33:30,527 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:33:51,760 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:34:11,492 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-11 08:37:26,009 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-12 06:57:58,024 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-12 07:31:45,607 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-12 09:18:39,858 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-12 10:24:27,411 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-13 01:45:14,599 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:35[ERROR] - ssqqqccc
+2017-04-13 01:49:48,655 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/views.py:34[ERROR] - ssqqqccc
+2017-05-05 10:44:08,816 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:('UUID',)
+2017-05-05 10:50:39,449 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:('UUID',)
+2017-05-05 10:51:19,447 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'UUID'
+2017-05-05 10:55:00,299 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'UUID'
+2017-05-05 10:57:04,953 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'UUID'
+2017-05-05 11:22:33,954 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'Server' object has no attribute 'update'
+2017-05-05 11:23:12,400 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'Server' object has no attribute 'update'
+2017-05-05 11:23:15,666 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/__init__.py:26[ERROR] - sysinfo 同步失败:'Server' object has no attribute 'update'
+2017-05-14 10:10:12,228 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/product.py:34[ERROR] - cheshi
+2017-05-14 10:13:23,555 - /Users/xiaoyong.feng/Desktop/reboot_lianxi/dashborad/server/product.py:34[ERROR] - cheshi

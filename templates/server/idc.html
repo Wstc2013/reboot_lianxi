@@ -1,0 +1,36 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <caption>
+    <a href="/server/idc/add/"  class="btn btn-primary" type="button">添加idc</a>
+    </caption>
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>idc名</th>
+            <th>联系人</th>
+            <th>联系人邮箱</th>
+            <th>操作</th>
+
+        </tr>
+        {% for idc in object_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ idc.idc_name }}</td>
+            <td>{{ idc.user.name }}
+            </td>
+            <td>
+                {{ idc.user.email }}
+
+            </td>
+            <td>
+                <button class="btn btn-primary btn-sm show_group_users" data='{"gid": "{{ group.id }}", "groupname": "{{ group.name }}"}'>成员列表</button>
+                <a class="btn btn-danger btn-sm show_group_users" href="/group/permission/?gid={{ group.id }}" >修改权限</a>
+                <button class="btn btn-primary btn-sm show_group_permission" data='{{ group.id }}' >查看权限</button>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
