@@ -173,3 +173,10 @@ LOGIN_URL = '/user/login/'
 
 ###没有权限url
 PERMISSION = '/permission/none'
+
+
+##zabbix url
+ZABBIX_URL="http://59.110.12.72:8000/zabbix"
+##zabbix 用户密码
+ZABBIX_USER="Admin"
+ZABBIX_PASS="NvbzyaMXTvKq$4MU"

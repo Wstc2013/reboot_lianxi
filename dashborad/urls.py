@@ -7,6 +7,8 @@ from dashborad import  user
 from dashborad.user import  group,permission
 from dashborad.server import  idc,product
 from dashborad import server
+from dashborad import zabbix
+from dashborad.zabbix import template
 
 urlpatterns = [
     url(r'^user/login/$', views.login_view),
@@ -61,7 +63,17 @@ urlpatterns = [
 
     ]
     )),
+    url(r'^monitor/', include([
+        url(r'^zabbix/',include([
+            url(r'^hostrsync/$',zabbix.HostRsyncView.as_view()),
+            url(r'^linktemplate/$',template.LinktemplateView.as_view()),
+            url(r'^hoststatus/$',template.GetHostStatusView.as_view()),
 
+
+        ])),
+
+    ]
+    )),
 
 
 ]

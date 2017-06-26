@@ -110,4 +110,17 @@ class Status(models.Model):
     name = models.CharField(max_length=32)
 
 
+class ZabbixHost(models.Model):
+    server = models.OneToOneField(Server,null=True)
+    zabbix_hostid = models.IntegerField(db_index=True,null=True,verbose_name='zabbix_hostid')
+    zabbix_hostname = models.CharField(max_length=32,db_index=True,null=True,verbose_name='zabbix_hostname')
+    zabbix_ip = models.CharField(max_length=32,db_index=True,null=True,verbose_name='zabbix_ip')
+    updatetime = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return  "{}.{}".format(self.zabbix_hostid,self.zabbix_hostname)
+
+    class Meta:
+        db_table = "resource_zabbix_cache"
+
 

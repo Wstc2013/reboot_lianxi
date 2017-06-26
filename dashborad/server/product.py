@@ -8,42 +8,11 @@ from  django.shortcuts import render
 from  dashborad.form.product import Product
 from  dashborad import  models
 from  dashborad.models import Server
+from  dashborad import public
 import  logging
 logger = logging.getLogger('opsweb')
 from django.conf import settings
 import  json
-
-class Ztree(object):
-
-    def __init__(self):
-        self.data = self._get_all_data()
-
-    def _get_all_data(self):
-        product_objs = models.Product.objects.all()
-        return  product_objs
-
-    def _get_second_product_obj(self,pid):
-        second_product = [  objs for objs in self.data if objs.p_product is not None and objs.p_product.id ==pid]
-        return  second_product
-
-    def get(self):
-        ret = []
-        one_product = [  objs for objs in self.data if objs.p_product is None]
-        for one_obj in one_product:
-            second_product = self._get_second_product_obj(one_obj.id)
-            tmp = {}
-            tmp['pid'] = 0
-            tmp['id'] =one_obj.id
-            tmp['name'] = one_obj.name
-            tmp['children'] =[]
-            for child in second_product:
-                tmp['children'].append({"pid":one_obj.id,"name":child.name,"id":child.id})
-            ret.append(tmp)
-        return ret
-
-
-
-
 
 
 class AddProductView(TemplateView):
@@ -89,7 +58,7 @@ class  ListProductView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ListProductView, self).get_context_data(**kwargs)
-        context['znodes'] = json.dumps(Ztree().get())
+        context['znodes'] = json.dumps(public.Ztree().get_product())
         #context['znodes'] = Ztree().get()
         return   context
 

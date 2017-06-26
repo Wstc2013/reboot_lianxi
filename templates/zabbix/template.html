@@ -1,0 +1,205 @@
+
+{% extends "public/layout.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<style>
+    .label-height{height:42px;line-height: 42px;margin-bottom: 0px;}
+    .btn + .btn{margin-left:20px;}
+    .choose-one{padding-top:10px;padding-bottom:10px;}
+    .choose-one a{font-size: 10px;}
+    .margin-lr15{margin-left:-15px;margin-right:-15px;}
+    .table > tbody > tr > td{vertical-align: middle;}
+    input[type=checkbox]{margin:2px 0px 0px;}
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{border-top:0px;}
+    td{text-align: left;}
+    td p{margin:0px;}
+    .padding-right10{padding-right:10px;}
+    .checkbox{margin-top:0px;margin-bottom:0px;}
+    .margin-top4{margin-top:4px;}
+    .glyphicon{top:3px;}
+    input[type=checkbox]{margin:4px 0px 0px;}
+    .bg-gif{display:none;font-size: 70px;color:#1ab394;}
+    .bg-gif span{animation:rotate 5s infinite linear; }
+    @-moz-keyframes rotate{
+        0%{
+            -moz-transform:rotate(0deg);
+        }
+        100%{
+            -moz-transform:rotate(360deg);
+        }
+    }
+    @-webkit-keyframes rotate{
+        0%{
+            -webkit-transform:rotate(0deg);
+        }
+        100%{
+            -webkit-transform:rotate(360deg);
+        }
+    }
+    @keyframes rotate{
+        0%{
+            transform:rotate(0deg);
+        }
+        100%{
+            transform:rotate(360deg);
+        }
+    }
+    .cover{position:fixed;width:100%;height:100%;top:0;left:0;right:0;bottom:0;display:none;z-index:2000;}
+    .cover-bg{position:fixed;background:rgba(0,0,0,0.8);z-index:2001;width:100%;height:100%;top:0;left:0;right:0;bottom:0;}
+    .cover p{position:absolute;color:#ffffff;font-size: 30px;text-align: center;z-index: 2100;width:200px;height:50px;top:50%;margin-top:-25px;left:50%;margin-left:-100px;}
+
+    #link_template_ret>tr>td:nth-of-type(1){white-space:nowrap; }
+    #link_template_ret>tr>td:nth-of-type(2){text-align: left;}
+</style>
+
+{% endblock %}
+
+
+
+{% block breadcrumb %}
+<li><a href="#">监控配置</a><span class="divider"></span></li>
+<li class="active">模板绑定</li>
+{% endblock %}
+
+{% block body %}
+
+
+<div class="row">
+        <div class="col-xs-2 col-md-2 col-lg-2">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="col-xs-10 col-md-10 col-lg-10">
+            <div class="row">
+                <div class="pull-left"><label class="label-height">模板搜索</label></div>
+                <div class="col-xs-6 col-md-6 col-lg-6">
+                    <select name="" id="select-templates" class="chosen-select chosen-transparent form-control" parsley-trigger="change" parsley-required="true" parsley-error-container="#selectbox" multiple>
+                        {% for template in templates %}
+                        <option value="{{ template.templateid }}">{{ template.name }}</option>
+                        {% endfor  %}
+
+                    </select>
+                </div>
+                <div class="col-xs-4 col-md-4 col-lg-4 margin-top4">
+                    <button class="btn btn-primary" id="template-link">模版关联</button>
+                    <button class="btn btn-info sync-cache">同步cache</button>
+                </div>
+            </div>
+            <div class="choose-one">
+                <a href="javascript:;" class="btn btn-default choose-all">全选</a>
+                <a href="javascript:;" class="btn btn-default unchoose">反选</a>
+                <a href="javascript:;" class="btn btn-default unchoose-all">全不选</a>
+            </div>
+
+            <div class="bg-gif col-md-4 text-center"><span class="glyphicon glyphicon-refresh"></span></div>
+            <table class="table margin-lr15">
+                <tbody class="line-list">
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<!--閬洊灞�-->
+<div class="cover">
+    <div class="cover-bg"></div>
+    <p>鍚屾涓�...</p>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">鍚屾涓绘満鍒皕abbix</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>涓绘満鍚�</th>
+                            <th>淇℃伅</th>
+                        </tr>
+                    </thead>
+                    <tbody id="link_template_ret">
+
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <p class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/static/zTree_v3-master/js/jquery.ztree.core.js"></script>
+
+
+
+
+<script>
+    var zTreeObj;
+    var line_list= $('.line-list');
+    var bg_gif = $('.bg-gif');
+    var setting = {
+        view: {
+            fontCss: {fontSize: "16px"}
+        },
+        callback: {
+		onClick: zTreeOnClick
+	    }
+
+    };
+    function zTreeOnClick(event, treeId, treeNode) {
+        if (treeNode.isParent) {
+            return false
+        }
+        add_hoststatus_center(treeNode.id)
+
+    }
+    function add_hoststatus_center(id) {
+        bg_gif.show();
+        line_list.empty();
+        $.get('/monitor/zabbix/hoststatus',{'id':id},function (res) {
+            bg_gif.hide();
+            if  (res.status ==0){
+
+                var data = res.data;
+
+                $.each(data,function (ke,va) {
+                    console.log(va)
+                    var html = '';
+                    html += '<tr>';
+                    html += '<td width="200"><div class="checkbox"> <label><input type="checkbox" name="hostname" value="'+va.id+'"/>'+va.name;
+                    html += '</label></div> </td>';
+                    html += '<td class="clearfix">'+va.mes+'</td>';
+                    html += '</tr>';
+                    line_list.append(html);
+
+
+                });
+
+            }
+            else {
+
+            }
+        })
+    }
+
+    var zNodes = {{ znodes|safe }};
+    $(function() {
+        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting,zNodes);
+        $(".chosen-select").chosen({disable_search_threshold: 10});
+
+    })
+
+</script>
+{% endblock %}
